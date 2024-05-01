@@ -71,5 +71,9 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
-# TODO: Add migration & seeding scripts here
-CMD ["sh", "-c", "node apps/web/server.js"]
+RUN yarn global add prisma
+COPY packages/prisma/schema.prisma .
+
+# TODO: Consider adding seeding script here
+CMD ["sh", "-c", "$(yarn global bin)/prisma migrate deploy --schema=schema.prisma && node apps/web/server.js"]
+
