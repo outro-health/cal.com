@@ -41,18 +41,12 @@ COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
 
 # app-store packages aren't explicitly required but need to be available
-# COPY packages/app-store/ ./packages/app-store
-COPY package.json yarn.lock .yarnrc.yml playwright.config.ts turbo.json git-init.sh git-setup.sh ./
-COPY .yarn ./.yarn
-COPY apps/web ./apps/web
 COPY packages ./packages
-COPY tests ./tests
 
 RUN yarn install
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-
 
 # Disable linting and type checking in the next build
 ENV CI=1
